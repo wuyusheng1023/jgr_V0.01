@@ -7,7 +7,7 @@ import DatePicker from 'antd/lib/date-picker'
 
 const { RangePicker } = DatePicker;
 
-const ParamForm = () => {
+const ParamForm = ({ onSubmit }) => {
   const [componentSize, setComponentSize] = useState('default');
   const [formLayout] = useState('horizontal');
 
@@ -26,7 +26,24 @@ const ParamForm = () => {
       null;
 
   const onFinish = (data) => {
-    console.log(data)
+    if (data.range === undefined) {
+      alert("Please selete a date range!")
+      return
+    }
+
+    const dateList = data.range.map(date => {
+      const dateString = date._d.toISOString()
+      const indx = dateString.indexOf("T")
+      return dateString.slice(0, indx)
+    }
+    )
+
+    delete data.range
+    data.from = dateList[0]
+    data.to = dateList[1]
+    console.log('Submit to App: ', data)
+
+    onSubmit(data)
   }
 
   return (
@@ -42,6 +59,14 @@ const ParamForm = () => {
         initialValues={{
           size: componentSize,
         }}
+
+        initialValues={{
+          station: "KUM",
+          quality: "ANY",
+          interval: "1 min",
+          aggregation: "NONE"
+        }}
+
         onValuesChange={onFormLayoutChange}
         size={componentSize}
 
