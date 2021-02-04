@@ -5,6 +5,8 @@ import Radio from 'antd/lib/radio'
 import Select from 'antd/lib/select'
 import DatePicker from 'antd/lib/date-picker'
 
+const { RangePicker } = DatePicker;
+
 const ParamForm = () => {
   const [componentSize, setComponentSize] = useState('default');
   const [formLayout] = useState('horizontal');
@@ -23,8 +25,8 @@ const ParamForm = () => {
       } :
       null;
 
-  const onFinish = (e) => {
-    console.log('Click Submit')
+  const onFinish = (data) => {
+    console.log(data)
   }
 
   return (
@@ -53,22 +55,18 @@ const ParamForm = () => {
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item label="From">
-          <DatePicker />
+        <Form.Item label="To" name="range">
+          <RangePicker />
         </Form.Item>
 
-        <Form.Item label="To">
-          <DatePicker />
-        </Form.Item>
-
-        <Form.Item label="Processing Level">
+        <Form.Item label="Processing Level" name="quality">
           <Select>
             <Select.Option value="ANY">ANY</Select.Option>
             <Select.Option value="CHECKED">CHECKED</Select.Option>
           </Select>
         </Form.Item>
 
-        <Form.Item label="Averaging">
+        <Form.Item label="Averaging" name="interval">
           <Select>
             <Select.Option value="1 min">1 min</Select.Option>
             <Select.Option value="30 min">30 min</Select.Option>
@@ -76,7 +74,7 @@ const ParamForm = () => {
           </Select>
         </Form.Item>
 
-        <Form.Item label="Averaging Type">
+        <Form.Item label="Averaging Type" name="aggregation">
           <Select>
             <Select.Option value="NONE">NONE</Select.Option>
             <Select.Option value="ARITHMETIC">ARITHMETIC</Select.Option>
