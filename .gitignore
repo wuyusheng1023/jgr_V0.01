@@ -1,0 +1,6 @@
+.vscode/
+venv/
+docs/
+playground/
+
+.eslintcache
