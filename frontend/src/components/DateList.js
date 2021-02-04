@@ -1,5 +1,5 @@
 import React from 'react';
-import 'antd/dist/antd.css';
+import Button from 'antd/lib/button'
 import List from 'antd/lib/list';
 
 const data = [
@@ -20,17 +20,22 @@ const data = [
 const DateList = () => {
 
   return (
-    <List
-      itemLayout="horizontal"
-      dataSource={data}
-      renderItem={item => (
-        <List.Item>
-          <List.Item.Meta
-            title={<a href="https://ant.design">{item.title}</a>}
-          />
-        </List.Item>
-      )}
-    />
+    <>
+      <h2 style={{ padding: "10px" }}>Date List</h2>
+      <Button>Start Analysis</Button>
+      <List
+        style={{ padding: "10px" }}
+        itemLayout="horizontal"
+        dataSource={data}
+        renderItem={item => (
+          <List.Item>
+            <List.Item.Meta
+              title={item.title}
+            />
+          </List.Item>
+        )}
+      />
+    </>
   )
 }
 
