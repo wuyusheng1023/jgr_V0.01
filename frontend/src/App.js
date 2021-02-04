@@ -6,9 +6,10 @@ import 'antd/dist/antd.css'
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
 import ParamForm from './components/ParamsForm'
+import DateList from './components/DateList'
 
 function App() {
-  const [state, setState] = useState()
+  const [state, setState] = useState({isSubmitted: false})
 
   // const url = "https://smear-backend.rahtiapp.fi/search/timeseries"
 
@@ -26,31 +27,44 @@ function App() {
 
   return (
     <div className="App">
-      <Row>
+
+      <Row style={{ padding: "10px" }}>
         <Col span={20} offset={2} >
-          header
+          <h1>SMEAR NPF event auto-analyzer</h1>
         </Col>
       </Row>
+
       <Row>
         <Col span={20} offset={2}>
-          <ParamForm 
-            onSubmit={(data) => setState(data)}
-          />
+          {state.isSubmitted === true ? null:<ParamForm
+            onSubmit={(data) => {
+              data.isSubmitted = true;
+              setState(data)
+            }}
+          />}
         </Col>
       </Row>
-      <Row>
-        <Col span={5} offset={2}>
-          sider
-        </Col>
-        <Col span={15} offset={0}>
-          contene
-        </Col>
-      </Row>
-      <Row>
+
+      {state.isSubmitted === true ? 
+        <Row>
+          <Col span={5} offset={2}>
+            <DateList/>
+          </Col>
+          <Col span={15} offset={0}>
+            content
+          </Col>
+        </Row> : null
+      }
+
+      <Row style={{ padding: "20px" }}>
         <Col span={20} offset={2}>
-          footer
+          <p style={{ textAlign: 'center', fontSize: '10px', marginTop: '30px' }}>
+            © Copyright 2021. All Rights Reserved.
+            <br></br>yusheng.wu@helisinki.fi
+          </p>
         </Col>
       </Row>
+      
     </div>
   );
 }
