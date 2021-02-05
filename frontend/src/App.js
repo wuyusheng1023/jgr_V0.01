@@ -9,7 +9,8 @@ import ParamForm from './components/ParamsForm'
 import DateList from './components/DateList'
 
 function App() {
-  const [state, setState] = useState({isSubmitted: false})
+  const [queryMeta, setQueryMeta] = useState({isSubmitted: false})
+  const [dateList, setDateList] = useState()
 
   // const url = "https://smear-backend.rahtiapp.fi/search/timeseries"
 
@@ -25,6 +26,16 @@ function App() {
   // from: dateList[0] + "T00:00:00.000",
   // to: dateList[1] + "T23:59:59.999"
 
+  const getDaysArray = (startDateStr, endDateStr) => {
+    const start = new Date(startDateStr)
+    const end = new Date(endDateStr)
+    for (var arr=[], dt=new Date(start); dt<=end; dt.setDate(dt.getDate()+1)){
+      const dtItem = dt.toISOString().slice(0, 10)
+      arr.push(dtItem)
+    }
+    return arr;
+  }
+
   return (
     <div className="App">
 
@@ -36,17 +47,19 @@ function App() {
 
       <Row>
         <Col span={20} offset={2}>
-          {state.isSubmitted === true ? null:<ParamForm
-            onSubmit={(data) => {
-              data.isSubmitted = true;
-              setState(data)
+          {queryMeta.isSubmitted === true ? null:<ParamForm
+            onSubmit={(queryMeta) => {
+              queryMeta.isSubmitted = true;
+              setQueryMeta(queryMeta)
+              setDateList(getDaysArray(queryMeta.from, queryMeta.to))
             }}
           />}
         </Col>
       </Row>
 
-      {state.isSubmitted === true ? 
+      {queryMeta.isSubmitted === true ? 
         <Row>
+          
           <Col span={5} offset={2}>
             <DateList/>
           </Col>
