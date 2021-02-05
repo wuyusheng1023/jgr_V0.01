@@ -5,8 +5,9 @@ import 'antd/dist/antd.css'
 
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
-import ParamForm from './components/ParamsForm'
-import DateList from './components/DateList'
+import ParamForm from './components/ParamsForm.jsx'
+import DateList from './components/DateList.jsx'
+import ChartsFrame from './components/ChartsFrame.jsx'
 
 function App() {
   const [queryMeta, setQueryMeta] = useState({isSubmitted: false})
@@ -73,8 +74,9 @@ function App() {
           </Col>
 
           <Col span={15} offset={0}>
-            content
-          </Col>
+            <h2>Analysis Procedure</h2>
+            <ChartsFrame/>
+            </Col>
         </Row> : null
       }
 
