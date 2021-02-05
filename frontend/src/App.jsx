@@ -38,14 +38,6 @@ function App() {
     return arr.map((item, index) => ({ id: index, date: item }));
   }
 
-  // const sleep = milliseconds => {
-  //   const date = Date.now();
-  //   let currentDate = null;
-  //   do {
-  //     currentDate = Date.now();
-  //   } while (currentDate - date < milliseconds);
-  // }
-
   return (
     <div className="App">
 
