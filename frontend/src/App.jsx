@@ -9,16 +9,10 @@ import ParamForm from './components/ParamsForm.jsx'
 import DateList from './components/DateList.jsx'
 import ChartsFrame from './components/ChartsFrame.jsx'
 
-import setting from './setting';
-const {rootEndpoint, dpList} = setting
-
 function App() {
   const [queryMeta, setQueryMeta] = useState({isSubmitted: false})
   const [dateList, setDateList] = useState()
   const [runID, setRunID] = useState(-1)
-
-  // from: dateList[0] + "T00:00:00.000",
-  // to: dateList[1] + "T23:59:59.999"
 
   const getDaysArray = (startDateStr, endDateStr) => {
     const start = new Date(startDateStr)
@@ -59,7 +53,7 @@ function App() {
 
           <Col span={15} offset={0}>
             <h2>Analysis Procedure</h2>
-            <ChartsFrame/>
+            <ChartsFrame id={runID} dateList={dateList} queryMeta={queryMeta} />
             </Col>
         </Row> : null
       }

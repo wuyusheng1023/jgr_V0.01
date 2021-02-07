@@ -61,7 +61,7 @@ const ParamForm = ({ onSubmit }) => {
         }}
 
         initialValues={{
-          station: "KUM",
+          station: "HYY",
           quality: "ANY",
           interval: "1 min",
           aggregation: "NONE"
