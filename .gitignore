@@ -1,6 +1,7 @@
-/.vscode/
-/ToDo.md
-/docs/
+.vscode/
+venv/
+docs/
+playground/
+
 .eslintcache
-/playground/
-/venv/
+ToDo.md
