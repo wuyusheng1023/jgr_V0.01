@@ -6,14 +6,14 @@ const SizeChart = ({ data }) => {
 
   useEffect(() => {
     const dpLowerLimit = 3e-9
-    const width = 800;
-    const height = 450;
+    const width = 640;
+    const height = 360;
 
     const conMargin = {
       top: 20,
-      bottom: 50,
-      left: 40,
-      right: 100
+      bottom: 80,
+      left: 60,
+      right: 120
     };
 
     const colorBarMargin = {
@@ -28,16 +28,16 @@ const SizeChart = ({ data }) => {
 
     const x = data.data.map( (d, i) => new Date(data.data[i].samptime));
     const pxX = x.length
+    const scX = d3.scaleUtc().domain(d3.extent(x)).range([conMargin.left, conMargin.left + conWidth])
 
     // "HYY_DMPS.d100e1" to 1e-9
     const mapDp = d => {
-      const [_, dpStr] = d.split(".d");
+     const [_, dpStr] = d.split(".d");
       return +dpStr / 1e12
     };
-
-    let y = data.columns.map(mapDp).filter(x => x>dpLowerLimit).sort( (a, b) => a - b );
-
-    let pxY = y.length
+    const y = data.columns.map(mapDp).filter(x => x>dpLowerLimit).sort( (a, b) => a - b );
+    const pxY = y.length
+    const scY = d3.scaleLog().domain(d3.extent(y)).range([conMargin.top + conHeight, conMargin.top])
 
     let z = [];
     for (let i=0; i < pxX; i++ ) {
@@ -49,13 +49,6 @@ const SizeChart = ({ data }) => {
         };
       };
     };
-
-    const colors = colormap({
-      colormap: 'jet',
-      nshades: 61,
-      format: 'hex',
-      alpha: 1
-    })
 
     const range = (start, end, step = 1) => {
       let output = [];
@@ -69,8 +62,17 @@ const SizeChart = ({ data }) => {
       return output;
     };
 
+    const logDpRange = range(1, 4.0001, 0.05)
+
+    const colors = colormap({
+      colormap: 'jet',
+      nshades: logDpRange.length,
+      format: 'hex',
+      alpha: 1
+    })
+
     var scC = d3.scaleLinear()
-      .domain(range(1, 4.0001, 0.05))
+      .domain(logDpRange)
       .range(colors);
     
     const svg = d3.select(ref.current).attr("viewBox", `0 0 ${width} ${height}`);
@@ -83,7 +85,16 @@ const SizeChart = ({ data }) => {
       .append("path")
         .attr("d", d3.geoPath())
         .attr("fill", d => scC(d.value))
-        .attr("stroke", "none")
+        .attr("stroke", "none");
+
+    svg.append("g")
+      .attr("transform", `translate( 0, ${conMargin.top + conHeight} )`)
+      .call(d3.axisBottom(scX).tickFormat(d3.utcFormat("%H:%M"))
+        .ticks(d3.utcHour.every(3)));
+    
+    svg.append("g") 
+      .attr("transform", `translate( ${conMargin.left}, 0 )`)
+      .call(d3.axisLeft(scY))
 
     return svg.node();
   })
