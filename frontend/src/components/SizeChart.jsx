@@ -43,10 +43,17 @@ const SizeChart = ({ data }) => {
       };
     };
 
-    console.log(z)
+    var scC = d3.scaleLinear().domain([1, 3, 5]).range(["blue", "white", "red"]);
+    
+    const svg = d3.select(ref.current);
+    const g = svg.append("g");
 
-    const svg = d3.select(ref.current)
-      .attr("vieBox", [0, 0, width, height])
+    const conMkr = d3.contours().size([pxX, pxY]).thresholds(100);
+    g.append("g").selectAll("path").data( conMkr(z) ).enter()
+      .append("path")
+        .attr("d", d3.geoPath())
+        .attr("fill", d => scC(Math.log10(d.value)))
+        .attr("stroke", "none")
 
     console.log(data);
 
