@@ -1,8 +1,16 @@
 import { useState } from 'react'
 import Row from 'antd/lib/row'
+import Col from 'antd/lib/col';
+
+import SizeChart from './SizeChart.jsx'
+
 import setting from '../setting'
 
 const { rootEndpoint, dpList} = setting
+
+const steps = {
+  step1: "Load data"
+}
 
 const ChartsFrame = ({id, dateList, queryMeta}) => {
   const [step, setStep] = useState(0)
@@ -28,7 +36,7 @@ const ChartsFrame = ({id, dateList, queryMeta}) => {
   const processRawData = rawData => {
     const data = rawData
     setDate(data)
-    setStep(1);
+    setStep(2);
   }
 
   if (step === 0) {
@@ -40,8 +48,22 @@ const ChartsFrame = ({id, dateList, queryMeta}) => {
 
   return (
     <>
-      <Row>Row 1</Row>
-      <Row>Row 2</Row>
+      <Row>
+        <Col style={{ padding: "10px" }} span={20} offset={2} >
+          <h3>
+            { 
+              step < 2 ? `step 1: ${steps.step1}` :
+              "step2"
+            }
+          </h3>
+        </Col>
+      </Row>
+      <Row>
+        {
+          (typeof data === "undefined") ? <h2>Waiting data</h2> :
+          <SizeChart data={data}/>
+        }
+      </Row>
     </>
   )
 }

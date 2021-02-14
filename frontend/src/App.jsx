@@ -8,7 +8,6 @@ import Col from 'antd/lib/col';
 import ParamForm from './components/ParamsForm.jsx'
 import DateList from './components/DateList.jsx'
 import ChartsFrame from './components/ChartsFrame.jsx'
-import SizeChart from './components/SizeChart.jsx'
 
 function App() {
   const [queryMeta, setQueryMeta] = useState({isSubmitted: false})
@@ -58,12 +57,6 @@ function App() {
             </Col>
         </Row> : null
       }
-
-      <Row>
-        <Col span={20} offset={2}>
-          <SizeChart/>
-        </Col>
-      </Row>
 
       <Row style={{ padding: "20px" }}>
         <Col span={20} offset={2}>
