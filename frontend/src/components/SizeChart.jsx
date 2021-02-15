@@ -6,6 +6,8 @@ const SizeChart = ({ data }) => {
 
   useEffect(() => {
     const dpLowerLimit = 3e-9
+
+    // plot dimemsions
     const width = 640;
     const height = 360;
 
@@ -84,18 +86,11 @@ const SizeChart = ({ data }) => {
     };
     const smArr1 = smoothDNdlogDp(rawArr, 3, 3);
     const smArr2 = smoothDNdlogDp(rawArr, 9, 5);
-
-    // find the ROI
-    const upperDp = 25e-9;
-    const upperIndex = y.map(v => v>upperDp).indexOf(true);
-    const upperArr = smArr2[upperIndex];
-    const bottomRegion = smArr2.slice(0, upperIndex);
-    let POI = bottomRegion.map(dpArr => dpArr.map( (v, i) => v-upperArr[i] > 0))
     
     // select raw data or a smooth data to plot the contour
-    const dNdlogDp = smArr2;
+    const dNdlogDp = Array.from(smArr2);
 
-    // Calculate 1D array for contour colors
+    // calculate 1D array for contour colors
     let z = dNdlogDp.reverse();
     z = [].concat(...z).map( x => x >= 10 ? Math.log10(x) : 1.000000001);
 
@@ -112,6 +107,7 @@ const SizeChart = ({ data }) => {
       return output;
     };
 
+    // calculate dNdlogDp contour color scale
     const logDpRange = range(1, 4.0001, 0.05)
     const colors = colormap({
       colormap: 'jet',
@@ -122,10 +118,22 @@ const SizeChart = ({ data }) => {
     var scC = d3.scaleLinear()
       .domain(logDpRange)
       .range(colors);
-    
+
+    // find the ROI
+    const upperDp = 25e-9;
+    const upperIndex = y.map(v => v > upperDp).indexOf(true);
+    const upperArr = smArr2[upperIndex];
+    const topRegion = smArr2.slice(upperIndex);
+    const bottomRegion = smArr2.slice(0, upperIndex);
+    const topROI = topRegion.map(dpArr => dpArr.map(v => 0));
+    const bottomROI = bottomRegion.map(dpArr => dpArr.map((v, i) => v - upperArr[i] > 0 ? 1:0 ));
+    const ROI = bottomROI.concat(topROI);
+
+    // start plotting
     const svg = d3.select(ref.current).attr("viewBox", `0 0 ${width} ${height}`);
     const g = svg.append("g");
 
+    // plot dNdlogDp contour
     const conMkr = d3.contours().size([pxX, pxY]).thresholds(100);
     g.append("g")
       .attr("transform", `translate( ${conMargin.left}, ${conMargin.top} ) scale(${conWidth / pxX}, ${conHeight / pxY})`)
@@ -135,19 +143,21 @@ const SizeChart = ({ data }) => {
         .attr("fill", d => scC(d.value))
         .attr("stroke", "none");
 
+    // plot x-axis
     svg.append("g")
       .attr("transform", `translate( 0, ${conMargin.top + conHeight} )`)
       .call(d3.axisBottom(scX).tickFormat(d3.utcFormat("%H:%M"))
         .ticks(d3.utcHour.every(3)));
     
+    // plot y-axis
     svg.append("g") 
       .attr("transform", `translate( ${conMargin.left}, 0 )`)
-      .call(d3.axisLeft(scY))
+      .call(d3.axisLeft(scY));
 
     // return svg.node();
-  })
+  });
 
-  const ref = useRef()
+  const ref = useRef();
 
   return (
     <svg
@@ -157,4 +167,4 @@ const SizeChart = ({ data }) => {
   )
 };
 
-export default SizeChart
+export default SizeChart;
