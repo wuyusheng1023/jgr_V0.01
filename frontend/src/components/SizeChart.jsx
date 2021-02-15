@@ -85,6 +85,13 @@ const SizeChart = ({ data }) => {
     const smArr1 = smoothDNdlogDp(rawArr, 3, 3);
     const smArr2 = smoothDNdlogDp(rawArr, 9, 5);
 
+    // find the ROI
+    const upperDp = 25e-9;
+    const upperIndex = y.map(v => v>upperDp).indexOf(true);
+    const upperArr = smArr2[upperIndex];
+    const bottomRegion = smArr2.slice(0, upperIndex);
+    let POI = bottomRegion.map(dpArr => dpArr.map( (v, i) => v-upperArr[i] > 0))
+    
     // select raw data or a smooth data to plot the contour
     const dNdlogDp = smArr2;
 
