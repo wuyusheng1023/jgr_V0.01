@@ -91,7 +91,7 @@ const SizeChart = ({ data }) => {
     const dNdlogDp = Array.from(smArr2);
 
     // calculate 1D array for contour colors
-    let z = dNdlogDp.reverse();
+    let z = Array.from(dNdlogDp).reverse();
     z = [].concat(...z).map( x => x >= 10 ? Math.log10(x) : 1.000000001);
 
     // function to get a range array
@@ -125,21 +125,22 @@ const SizeChart = ({ data }) => {
     const upperArr = smArr2[upperIndex];
     const topRegion = smArr2.slice(upperIndex);
     const bottomRegion = smArr2.slice(0, upperIndex);
-    const topROI = topRegion.map(dpArr => dpArr.map(v => 0));
-    const bottomROI = bottomRegion.map(dpArr => dpArr.map((v, i) => v - upperArr[i] > 0 ? 1:0 ));
+    const topROI = topRegion.map(dpArr => dpArr.map(v => -1));
+    const bottomROI = bottomRegion.map(dpArr => dpArr.map((v, i) => v - upperArr[i]));
     const ROI = bottomROI.concat(topROI);
 
     // start plotting
     const svg = d3.select(ref.current).attr("viewBox", `0 0 ${width} ${height}`);
-    const g = svg.append("g");
+    const g = svg.append("g")
+      .attr("transform", `translate( ${conMargin.left}, ${conMargin.top} ) scale(${conWidth / pxX}, ${conHeight / pxY})`);
+    const pathMkr = d3.geoPath();
 
     // plot dNdlogDp contour
-    const conMkr = d3.contours().size([pxX, pxY]).thresholds(100);
+    let conMkr = d3.contours().size([pxX, pxY]).thresholds(100);
     g.append("g")
-      .attr("transform", `translate( ${conMargin.left}, ${conMargin.top} ) scale(${conWidth / pxX}, ${conHeight / pxY})`)
       .selectAll("path").data( conMkr(z) ).enter()
       .append("path")
-        .attr("d", d3.geoPath())
+        .attr("d", pathMkr)
         .attr("fill", d => scC(d.value))
         .attr("stroke", "none");
 
@@ -154,7 +155,14 @@ const SizeChart = ({ data }) => {
       .attr("transform", `translate( ${conMargin.left}, 0 )`)
       .call(d3.axisLeft(scY));
 
-    // return svg.node();
+    // plot ROI contour line
+    z = Array.from(ROI).reverse();
+    z = [].concat(...z);
+    conMkr = d3.contours().size([pxX, pxY]).thresholds(10);
+    g.append("g").append("path")
+      .attr("d", pathMkr(conMkr.contour(z, 0.025)))
+      .attr("fill", "none").attr("stroke", "grey")
+      .attr("stroke-width", 1);
   });
 
   const ref = useRef();
